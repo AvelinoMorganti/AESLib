@@ -67,5 +67,40 @@ Serial.print("decrypted:");
 Serial.println(data);
 ```
 
+Usage example for AES 192 in CBC mode:
+
+``
+#include "AESLib.h"
+
+void setup(){
+Serial.begin(9600);
+uint8_t key[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23}; //key must have 24 bytes in the case of AES 192
+uint8_t iv[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23};  //iv must have 24 bytes in the case of AES 192
+char data[] = "I'm satoshi nakamoto. The creator of Bitcoin 000"; //48 chars. Date size needs to be multiple of 16 (mod 16)
+
+aes_context ctx = aes192_cbc_enc_start(key, iv);
+aes192_cbc_enc(key, iv, data, 48); //Date size needs to be multiple of 16 (mod 16)
+aes128_cbc_enc_continue(ctx, data, 48);//Date size needs to be multiple of 16 (mod 16)
+aes192_cbc_enc_finish(ctx);
+
+Serial.print("encrypted: ");
+int i = 0;
+for(i = 0; i < 48; i++){
+    //Serial.println(data[i]);
+}
+Serial.println(data);
+
+ctx = aes192_cbc_dec_start(key, iv);
+aes192_cbc_dec(key, iv, data, 48);
+aes192_cbc_dec_continue(ctx, data, 48);
+aes192_cbc_dec_finish(ctx);
+
+Serial.print("decrypted: ");
+Serial.println(data);
+
+}
+
+void loop(){}
+``
 
 
